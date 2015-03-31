@@ -6,7 +6,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
+import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,8 +17,6 @@ import android.widget.TextView;
 public class MainActivity extends Activity {
 
     private TextView text;
-    private Button btn_start;
-    private Button btn_stop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,52 +25,52 @@ public class MainActivity extends Activity {
         findViews();
     }
 
-    protected void findViews(){
-        text = (TextView)findViewById(R.id.text);
-        btn_start = (Button)findViewById(R.id.btn_start);
-        btn_stop = (Button)findViewById(R.id.btn_stop);
+    protected void findViews() {
+        text = (TextView) findViewById(R.id.text);
+    }
 
+    public void start_click(View view) {
 
+        AnimationSet animation = new AnimationSet(true);
+//        動畫放入動畫集合
+        animation.addAnimation(getrotateAnimation());
+        animation.addAnimation(getTranslateAnimation());
+//      text開始執行動畫集合
+        text.startAnimation(animation);
 
 
     }
 
-    public void start_click(View view){
-        TranslateAnimation translateAnimation = getTranslateAnimation();
-        translateAnimation.setInterpolator(
-                AnimationUtils.loadInterpolator(MainActivity.this, android.R.anim.linear_interpolator));
-        text.startAnimation(translateAnimation);
-
+    public void stop_click(View view) {
+//        清除動畫
+        text.clearAnimation();
 
     }
-
-    public void stop_click(View view){
-
-
-
-
-
-
-    }
-
 
     private TranslateAnimation getTranslateAnimation() {
-
+//      取得text的parent View
         View parentView = (View) text.getParent();
         // 文字移動的距離
-
-        TranslateAnimation translateAnimation = new TranslateAnimation(0, parentView.getWidth()
-                                                    , 0, parentView.getHeight());
+        int hight = parentView.getHeight();
+        int width = parentView.getWidth();
+//      位移距離(fromX, toX, fromY, toY)
+        TranslateAnimation translateAnimation = new TranslateAnimation(0, width - width / 4
+                , 0, hight - hight / 4);
+//      time 2s
         translateAnimation.setDuration(2000);
         translateAnimation.setRepeatMode(Animation.RESTART);
         translateAnimation.setRepeatCount(Animation.INFINITE);
         return translateAnimation;
     }
 
-
-
-
-
+    private RotateAnimation getrotateAnimation() {
+//      旋轉360度
+        RotateAnimation rotateAnimation = new RotateAnimation(0f, 360f);
+        rotateAnimation.setDuration(400);
+        rotateAnimation.setRepeatMode(Animation.RESTART);
+        rotateAnimation.setRepeatCount(Animation.INFINITE);
+        return rotateAnimation;
+    }
 
 
     @Override
